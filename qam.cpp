@@ -28,7 +28,6 @@ namespace halow
             flip *= -bit;
             ++bits;
         }
-        //std::cout << "encoder called " << pt<< std::endl;
         *cPoint = pt;
     }
 

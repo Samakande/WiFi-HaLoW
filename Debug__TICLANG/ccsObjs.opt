@@ -1,0 +1,3 @@
+"./main.o"
+"./qam.o"
+"../cc13x2r1f3.lds"
