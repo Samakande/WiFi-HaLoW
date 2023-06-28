@@ -11,7 +11,7 @@
 
 #include "symbol_mapper.h"
 
-namespace fun
+namespace halow
 {
 
     /*!
@@ -21,12 +21,196 @@ namespace fun
      *  + 1 -> data
      *  + 2 -> pilot
      */
+    char CH_BANDWIDTH = 'CBW2';
+
+    switch (CH_BANDWIDTH){
+
+  case 'CBW1': 
+
     const std::vector<unsigned char> symbol_mapper::m_active_map =
     {
-        0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2,
-        1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-        1, 2, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0
+        0, 0, 0, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 0, 0
     };
+        /*!
+     * The pilots are always BPSK modulated, or in other words they are always
+     * (1 + 0j) or (-1 + 0j).
+     */
+
+       const std::complex<double> symbol_mapper::PILOTS[2] =
+    {
+        { 1, 0},
+        {-1, 0}
+    };
+     /*!
+     *  -Initializations
+     *  + #m_data_subcarrier_count -> 48 data subcarriers
+     *  + #m_pilot_count -> 4 pilot subcarriers
+     */
+
+    symbol_mapper::symbol_mapper() :
+        m_data_subcarrier_count(32),
+        m_pilot_count(2)
+    {
+    }
+
+    break;
+  
+  case 'CBW2':
+     const std::vector<unsigned char> symbol_mapper::m_active_map =
+      {
+        0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2,
+        1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+        1, 2, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0
+    };
+     
+        /*!
+     * The pilots are always BPSK modulated, or in other words they are always
+     * (1 + 0j) or (-1 + 0j).
+     * Also, the first three pilots are always the same with the 4th pilot being inverted.
+     */
+    const std::complex<double> symbol_mapper::PILOTS[4] =
+    {
+        { 1, 0},
+        { 1, 0},
+        { 1, 0},
+        {-1, 0}
+    };
+
+     /*!
+     *  -Initializations
+     *  + #m_pilot_count -> 4 pilot subcarriers
+     */
+    symbol_mapper::symbol_mapper() :
+        m_data_subcarrier_count(52),
+        m_pilot_count(4)
+    {
+    }
+      
+    break;
+
+   case 'CBW4':
+     const std::vector<unsigned char> symbol_mapper::m_active_map =
+      {
+        0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+        1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0
+    };
+        /*!
+     * The pilots are always BPSK modulated, or in other words they are always
+     * (1 + 0j) or (-1 + 0j).
+     * Also, the first three pilots are always the same with the 4th pilot being inverted.
+     */
+    const std::complex<double> symbol_mapper::PILOTS[6] =
+    {
+        { 1, 0},
+        { 1, 0},
+        { 1, 0},
+        {-1, 0},
+        {-1, 0},
+        { 1, 0}
+    };
+
+     /*!
+     *  -Initializations
+     *  + #m_data_subcarrier_count -> 48 data subcarriers
+     *  + #m_pilot_count -> 4 pilot subcarriers
+     */
+    symbol_mapper::symbol_mapper() :
+        m_data_subcarrier_count(108),
+        m_pilot_count(6)
+    {
+    }
+
+    break;
+
+    case 'CBW8':
+     const std::vector<unsigned char> symbol_mapper::m_active_map =
+      {
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+        1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+        1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+    };
+    /*!
+     * The pilots are always BPSK modulated, or in other words they are always
+     * (1 + 0j) or (-1 + 0j).
+     */
+    const std::complex<double> symbol_mapper::PILOTS[4] =
+    {
+        { 1, 0},
+        { 1, 0},
+        { 1, 0},
+        {-1, 0},
+        {-1, 0},
+        { 1, 0},
+        { 1, 0},
+        { 1, 0}
+    };
+
+     /*!
+     *  -Initializations
+     *  + #m_pilot_count -> 4 pilot subcarriers
+     */
+    symbol_mapper::symbol_mapper() :
+        m_data_subcarrier_count(234),
+        m_pilot_count(8)
+    {
+    }
+    break;
+
+     case 'CBW16':
+     const std::vector<unsigned char> symbol_mapper::m_active_map =
+      {
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,  1, 1, 1, 1,
+        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+        1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 
+        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    };
+     /*!
+     * The pilots are always BPSK modulated, or in other words they are always
+     * (1 + 0j) or (-1 + 0j).
+     * Also, the first three pilots are always the same with the 4th pilot being inverted.
+     */
+    const std::complex<double> symbol_mapper::PILOTS[4] =
+    {
+        { 1, 0},
+        { 1, 0},
+        { 1, 0},
+        {-1, 0}
+    };
+     /*!
+     *  -Initializations
+     *  + #m_data_subcarrier_count -> 48 data subcarriers
+     *  + #m_pilot_count -> 4 pilot subcarriers
+     */
+    symbol_mapper::symbol_mapper() :
+        m_data_subcarrier_count(468),
+        m_pilot_count(16)
+    {
+    }
+
+    break;  
+     }
 
     /*!
      *  The polarity sequence that is multiplied by the pilot sample for each OFDM symbol beginning
@@ -52,25 +236,24 @@ namespace fun
      * (1 + 0j) or (-1 + 0j).
      * Also, the first three pilots are always the same with the 4th pilot being inverted.
      */
-    const std::complex<double> symbol_mapper::PILOTS[4] =
-    {
-        { 1, 0},
-        { 1, 0},
-        { 1, 0},
-        {-1, 0}
-    };
-
+   // const std::complex<double> symbol_mapper::PILOTS[4] =
+  //  {
+   //     { 1, 0},
+    //    { 1, 0},
+    //    { 1, 0},
+    //    {-1, 0}
+   // };
     /*!
      *  -Initializations
      *  + #m_data_subcarrier_count -> 48 data subcarriers
      *  + #m_pilot_count -> 4 pilot subcarriers
      */
-    symbol_mapper::symbol_mapper() :
-        m_data_subcarrier_count(48),
-        m_pilot_count(4)
-    {
-    }
-
+   // symbol_mapper::symbol_mapper() :
+   //     m_data_subcarrier_count(48),
+   //     m_pilot_count(4)
+   // {
+   // }
+    
     /*!
      *  Takes a vector of modulated data samples and maps them into OFDM symbols. The vector of
      *  data samples must be an integer multiple of 48 so that an integer number of symbols can be
