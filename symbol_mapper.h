@@ -12,7 +12,7 @@
 #include <vector>
 #include <complex>
 
-namespace fun
+namespace halow
 {
     /*!
      * \brief The symbol_mapper class

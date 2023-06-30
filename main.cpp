@@ -1,8 +1,7 @@
-/**
- * main.c
- */
+/** * main.c */
 #include "qam.h"
 #include "modulator.h"
+#include "symbol_mapper.h"
 #include <cstring>
 #include <iostream>
 
@@ -21,9 +20,18 @@ int main(void)
     {
         std::cout << "Constellation Point " << i << ": " << modulatedData[i] << std::endl;
     }
+    
+    // instantiate the pilot object
+   halow::symbol_mapper pilotTest{};
+   std::vector<std::complex<double>> pilotInserted = pilotTest.map(modulatedData); // insert the pilots and the nulls
 
+    // print the data with the  zeros and pilots inserted
+    for (int i = 0; i < pilotInserted.size(); i++)
+    {
+        std::cout << "Mapped Point " << i << ": " << pilotInserted[i] << std::endl;
+    }
+    
 
     return 0;
 
 }
-

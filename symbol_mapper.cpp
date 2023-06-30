@@ -8,7 +8,6 @@
 
 #include <cstring>
 #include <assert.h>
-
 #include "symbol_mapper.h"
 
 namespace halow
@@ -20,7 +19,7 @@ namespace halow
      *  + 0 -> null
      *  + 1 -> data
      *  + 2 -> pilot
-     */
+     
     char CH_BANDWIDTH = 'CBW2';
 
     switch (CH_BANDWIDTH){
@@ -34,19 +33,14 @@ namespace halow
         /*!
      * The pilots are always BPSK modulated, or in other words they are always
      * (1 + 0j) or (-1 + 0j).
-     */
+     
 
        const std::complex<double> symbol_mapper::PILOTS[2] =
     {
         { 1, 0},
         {-1, 0}
     };
-     /*!
-     *  -Initializations
-     *  + #m_data_subcarrier_count -> 48 data subcarriers
-     *  + #m_pilot_count -> 4 pilot subcarriers
-     */
-
+ 
     symbol_mapper::symbol_mapper() :
         m_data_subcarrier_count(32),
         m_pilot_count(2)
@@ -54,7 +48,7 @@ namespace halow
     }
 
     break;
-  
+
   case 'CBW2':
      const std::vector<unsigned char> symbol_mapper::m_active_map =
       {
@@ -62,12 +56,7 @@ namespace halow
         1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
         1, 2, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0
     };
-     
-        /*!
-     * The pilots are always BPSK modulated, or in other words they are always
-     * (1 + 0j) or (-1 + 0j).
-     * Also, the first three pilots are always the same with the 4th pilot being inverted.
-     */
+          
     const std::complex<double> symbol_mapper::PILOTS[4] =
     {
         { 1, 0},
@@ -76,10 +65,6 @@ namespace halow
         {-1, 0}
     };
 
-     /*!
-     *  -Initializations
-     *  + #m_pilot_count -> 4 pilot subcarriers
-     */
     symbol_mapper::symbol_mapper() :
         m_data_subcarrier_count(52),
         m_pilot_count(4)
@@ -96,12 +81,7 @@ namespace halow
         1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
         1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
         1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0
-    };
-        /*!
-     * The pilots are always BPSK modulated, or in other words they are always
-     * (1 + 0j) or (-1 + 0j).
-     * Also, the first three pilots are always the same with the 4th pilot being inverted.
-     */
+    };     
     const std::complex<double> symbol_mapper::PILOTS[6] =
     {
         { 1, 0},
@@ -112,11 +92,6 @@ namespace halow
         { 1, 0}
     };
 
-     /*!
-     *  -Initializations
-     *  + #m_data_subcarrier_count -> 48 data subcarriers
-     *  + #m_pilot_count -> 4 pilot subcarriers
-     */
     symbol_mapper::symbol_mapper() :
         m_data_subcarrier_count(108),
         m_pilot_count(6)
@@ -138,10 +113,7 @@ namespace halow
         1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
         1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
     };
-    /*!
-     * The pilots are always BPSK modulated, or in other words they are always
-     * (1 + 0j) or (-1 + 0j).
-     */
+   
     const std::complex<double> symbol_mapper::PILOTS[4] =
     {
         { 1, 0},
@@ -154,10 +126,6 @@ namespace halow
         { 1, 0}
     };
 
-     /*!
-     *  -Initializations
-     *  + #m_pilot_count -> 4 pilot subcarriers
-     */
     symbol_mapper::symbol_mapper() :
         m_data_subcarrier_count(234),
         m_pilot_count(8)
@@ -186,11 +154,7 @@ namespace halow
         1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
         1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     };
-     /*!
-     * The pilots are always BPSK modulated, or in other words they are always
-     * (1 + 0j) or (-1 + 0j).
-     * Also, the first three pilots are always the same with the 4th pilot being inverted.
-     */
+ 
     const std::complex<double> symbol_mapper::PILOTS[4] =
     {
         { 1, 0},
@@ -198,11 +162,7 @@ namespace halow
         { 1, 0},
         {-1, 0}
     };
-     /*!
-     *  -Initializations
-     *  + #m_data_subcarrier_count -> 48 data subcarriers
-     *  + #m_pilot_count -> 4 pilot subcarriers
-     */
+  
     symbol_mapper::symbol_mapper() :
         m_data_subcarrier_count(468),
         m_pilot_count(16)
@@ -211,7 +171,7 @@ namespace halow
 
     break;  
      }
-
+     */
     /*!
      *  The polarity sequence that is multiplied by the pilot sample for each OFDM symbol beginning
      *  with the signal symbol. For example, the pilots in the signal symbol will all be multipled by
@@ -219,6 +179,22 @@ namespace halow
      *  If the number of symbols is longer than 127 then the sequence just wraps back around to the
      *  beginning. The modulus (%) operator is very useful for achieving this effect.
      */
+
+     /*!
+     * The map for where the data, pilots, and null subcarriers go.
+     * - Legend:
+     *  + 0 -> null
+     *  + 1 -> data
+     *  + 2 -> pilot
+     */
+
+      const std::vector<unsigned char> symbol_mapper::m_active_map =
+      {
+        0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2,
+        1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+        1, 2, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0
+      };
+     
     const double symbol_mapper::POLARITY[127] =
     {
              1, 1, 1, 1,-1,-1,-1, 1,-1,-1,-1,-1, 1, 1,-1, 1,
@@ -236,23 +212,23 @@ namespace halow
      * (1 + 0j) or (-1 + 0j).
      * Also, the first three pilots are always the same with the 4th pilot being inverted.
      */
-   // const std::complex<double> symbol_mapper::PILOTS[4] =
-  //  {
-   //     { 1, 0},
-    //    { 1, 0},
-    //    { 1, 0},
-    //    {-1, 0}
-   // };
+    const std::complex<double> symbol_mapper::PILOTS[4] =
+    {
+        { 1, 0},
+        { 1, 0},
+        { 1, 0},
+        {-1, 0}
+    };
     /*!
      *  -Initializations
      *  + #m_data_subcarrier_count -> 48 data subcarriers
      *  + #m_pilot_count -> 4 pilot subcarriers
      */
-   // symbol_mapper::symbol_mapper() :
-   //     m_data_subcarrier_count(48),
-   //     m_pilot_count(4)
-   // {
-   // }
+    symbol_mapper::symbol_mapper() :
+        m_data_subcarrier_count(52),
+        m_pilot_count(4)
+    {
+    }
     
     /*!
      *  Takes a vector of modulated data samples and maps them into OFDM symbols. The vector of
