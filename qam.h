@@ -1,12 +1,10 @@
 /*
- * QAM.H
+ * qam.h
+ * This is a helper class of the const_mapper class. It encodes the data bits into IQ samples
+ * using grayscale coding
  *
  *  Created on: Jun 24, 2023
  *      Author: Kudzai Samakande
- */
-
-/*HEADER FILE FOR QAM TEMPLATE
- *THE FILE CONTAINS QAM CLASS WHICH CONTAINS THE FUNCTIONS FOR ENCODING AND DECODING QAM MODULATION
  */
 
 
@@ -25,7 +23,7 @@ namespace halow
             QAM(int numBits, double power, int gain =0 );
 
             //member function definition
-            void encode(const char *data, double *cPoint ); //calculate constellation point from the bit vector
+            void encode(const char *data, double &cPoint ); //calculate constellation point from the bit vector
             void decode(const char* IQ); //retrieves bits from the received constellation points
     };
 }

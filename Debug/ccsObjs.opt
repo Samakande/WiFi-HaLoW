@@ -1,5 +1,0 @@
-"./qam.o"
--Wl,-T"../cc13x2r1f3.lds"
--Wl,--start-group
--lc
--Wl,--end-group
