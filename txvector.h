@@ -1,55 +1,92 @@
 /*
- * mcs.h
+ * txvector.h
  *
- *  Created on: Jun 26, 2023
+ *  Created on: Jul 3, 2023
  *      Author: Kudzai Samakande
  */
-#include <cstring>
-#include <string>
+
+#ifndef TXVECTOR_H_
+#define TXVECTOR_H_
+
+#include <vector>
+#include <complex>
 #include <iostream>
-#ifndef MCS_H_
-#define MCS_H_
-
-
 namespace halow
 {
 
-    //define a structure data type that contains the modulation parameters
+    enum FORMAT : int           //The S1G FORMAT is the currently supported
+        {
+            SIG,
+            S1G_DUP_1M,
+            S1G_DUP_2M
+        };
+    enum PREAMBLE_TYPE    //S1G_1M and S1G_SHORT_PREAMBLE are the preamble types implemented
+            {
+                S1G_1M,
+                S1G_SHORT_PREAMBLE,
+                S1G_LONG_PREAMBLE
+            };
+    enum GI_TYPE : int
+               {
+                    SHORT_GI,
+                    LONG_GI
+              };
+    enum CH_BANDWIDTH: int
+               {
+                    CBW1=1,
+                    CBW2=2,
+                    CBW4=4,
+                    CBW8=8,
+                    CBW16=16
+               };
+
+    enum MU_SU : int
+               {
+                    SU,
+                    MU
+               };
+
+
+    //define a structure data type that contains the transmission parameters
+
     struct modParams
     {
         int mcs;
-        int channelWidth;
-        std::string model;
-        int Nsd;                    //Number of data subcarriers per OFDM symbol
+        CH_BANDWIDTH channelWidth;
+        MU_SU model;
+        GI_TYPE guard;
         int Nsa;                    //Total subcarriers
-        int Nsp;                    //pilot subcarriers per OFDM symbol
+        int Nst;                    //Total number of useful subcarriers per OFDM symbol
+        int Nsd;                    //Number of data subcarriers per OFDM symbol
+        int Nsp;                    //Pilot subcarriers per OFDM symbol
         int Nbpsc;                  //Number of Bits Per Subcarrier
         int Ncbps;                  //Number of Coded Bits Per OFDM Symbol = Nbpsc * Nsd
-        int Ndbps;                   //Number of Data Bits Per Symbol = Ncbps * Rate
+        int Ndbps;                  //Number of Data Bits Per Symbol = Ncbps * Rate
         double Kmod;                //Normalization Factor
-        int pilots[16];
+        int length;                 //Indicates the packet duration in number of symbols in the data to be modulated
 
         //member function of the structure that returns modulation parameters based on the mcs, channelWidth and model;
 
-        modParams mcss(int channelWidth, int param, const char* model)
+        modParams(int mcs,  CH_BANDWIDTH channelWidth, MU_SU model, GI_TYPE guard, int length)
+            : mcs(mcs),
+            channelWidth(channelWidth),
+            model(model),
+            length(length)
         {
-            modParams params; // Create a new instance of the modParams structure
-            params.channelWidth = channelWidth;
-            params.model = model;
-            params.mcs = param;
 
-            switch (channelWidth) 
-            {                
+
+            switch (channelWidth)
+            {
                 // channel width 1 MHz
-                case 1:
+                case CBW1:
                     Nsa = 32;
                     Nsd = 24;
                     Nsp = 2;
-                    pilots[0] = -7;
-                    pilots[1] = 7;
 
-                    if (strcmp(model, "SISO") == 0) {
-                        switch (param) { //cases for all 10 possible values of the modulation and coding scheme
+                    if (model == SU)
+                    {
+                        switch (mcs)
+                        { //cases for all 10 possible values of the modulation and coding scheme
                             case 0:                 //BPSK Rate = 1/2
                                 Nbpsc = 1;
                                 Ncbps = 24;
@@ -117,11 +154,14 @@ namespace halow
                                 Kmod = 1;
                                 break;
                             default:
-                                printf("Unknown param %d\n", param);
+                                printf("Unknown param %d\n", mcs);
                                 break;
                         }
-                    } else if (strcmp(model, "MIMO") == 0) {
-                        switch (param) {
+                    }
+                    else if (model == MU)
+                    {
+                        switch (mcs)
+                        {
                             case 0:
                                 Nbpsc = 1;
                                 Ncbps = 24;
@@ -141,28 +181,28 @@ namespace halow
                                 Kmod = 1 / sqrt(2);
                                 break;
                             default:
-                                printf("Unknown param %d\n", param);
+                                printf("Unknown param %d\n", mcs);
                                 break;
                         }
-                    } else {
-                        printf("Unknown model %s\n", model);
+                    }
+                    else
+                    {
+                        printf("Unknown model %d\n", model);
                     }
 
                     break;
 
                 // channel width 2 MHz
-                case 2:
+                case CBW2:
                     std::cout << "finding channel parameters and case 2 invoked" << std::endl;
-                    params.Nsa = 64;
-                    params.Nsd = 52;
-                    params.Nsp = 4;                        //4 pilot subcarriers per OFDM symbol
-                    params.pilots[0] = -21;
-                    params.pilots[1] = -7;
-                    params.pilots[2] = 7;
-                    params.pilots[3] = 21;
+                    Nsa = 64;
+                    Nsd = 52;
+                    Nsp = 4;                        //4 pilot subcarriers per OFDM symbol
 
-                    if (strcmp(model, "SISO") == 0) {
-                        switch (param) {
+                    if (model == SU)
+                    {
+                        switch (mcs)
+                        {
                             case 0:
                                 Nbpsc = 1;
                                 Ncbps = 52;                     //Number of Coded Bits Per OFDM Symbol = Nbpsc * Nsd
@@ -183,10 +223,10 @@ namespace halow
                                 break;
                             case 3:
                                 std::cout << "finding channel parameters and qam16 ready" << std::endl;
-                                params.Nbpsc = 4;
-                                params.Ncbps = 208;
-                                params.Ndbps = 104;
-                                params.Kmod = 1 / sqrt(10);
+                                Nbpsc = 4;
+                                Ncbps = 208;
+                                Ndbps = 104;
+                                Kmod = 1 / sqrt(10);
                                 break;
                             case 4:
                                 Nbpsc = 4;
@@ -219,11 +259,14 @@ namespace halow
                                 Kmod = 1 / sqrt(170);
                                 break;
                             default:
-                                printf("Unknown param %d\n", param);
+                                printf("Unknown param %d\n", mcs);
                                 break;
                         }
-                    } else if (strcmp(model, "MIMO") == 0) {
-                        switch (param) {
+                    }
+                    else if (model == MU)
+                    {
+                        switch (mcs)
+                        {
                             case 0:
                                 Nbpsc = 1;
                                 Ncbps = 52;
@@ -243,29 +286,27 @@ namespace halow
                                 Kmod = 1 / sqrt(2);
                                 break;
                             default:
-                                printf("Unknown param %d\n", param);
+                                printf("Unknown param %d\n", mcs);
                                 break;
                         }
-                    } else {
-                        printf("Unknown model %s\n", model);
+                    }
+                    else
+                    {
+                        printf("Unknown model %d\n", model);
                     }
 
                     break;
 
                 // channel width 4 MHz
-                case 4:
-                    Nsd = 108;
+                case CBW4:
                     Nsa = 128;
+                    Nsd = 108;
                     Nsp = 6;                        //6 pilot subcarriers per OFDM symbol
-                    pilots[0] = -53;
-                    pilots[1] = -25;
-                    pilots[2] = -11;
-                    pilots[3] = 11;
-                    pilots[4] = 25;
-                    pilots[5] = 53;
 
-                    if (strcmp(model, "SISO") == 0) {
-                        switch (param) {
+                    if (model == SU)
+                    {
+                        switch (mcs)
+                        {
                             case 0:
                                 Nbpsc = 1;
                                 Ncbps = 108;
@@ -327,11 +368,14 @@ namespace halow
                                 Kmod = 1 / sqrt(170);
                                 break;
                             default:
-                                printf("Unknown param %d\n", param);
+                                printf("Unknown param %d\n", mcs);
                                 break;
                         }
-                    } else if (strcmp(model, "MIMO") == 0) {
-                        switch (param) {
+                    }
+                    else if (model == MU)
+                    {
+                        switch (mcs)
+                        {
                             case 0:
                                 Nbpsc = 1;
                                 Ncbps = 108;
@@ -351,31 +395,27 @@ namespace halow
                                 Kmod = 1 / sqrt(2);
                                 break;
                             default:
-                                printf("Unknown param %d\n", param);
+                                printf("Unknown param %d\n", mcs);
                                 break;
                         }
-                    } else {
-                        printf("Unknown model %s\n", model);
+                    }
+                    else
+                    {
+                        printf("Unknown model %d\n", model);
                     }
 
                     break;
 
                 // channel width 8 MHz
-                case 8:
+                case CBW8:
                     Nsd = 243;
                     Nsa = 256;
                     Nsp = 8;                       //8 pilot subcarriers per OFDM symbol
-                    pilots[0] = -103;
-                    pilots[1] = -75;
-                    pilots[2] = -39;
-                    pilots[3] = -11;
-                    pilots[4] = 11;
-                    pilots[5] = 39;
-                    pilots[6] = 75;
-                    pilots[7] = 103;
 
-                    if (strcmp(model, "SISO") == 0) {
-                        switch (param) {
+                    if (model == SU)
+                    {
+                        switch (mcs)
+                        {
                             case 0:
                                 Nbpsc = 1;
                                 Ncbps = 234;
@@ -437,11 +477,14 @@ namespace halow
                                 Kmod = 1 / sqrt(170);
                                 break;
                             default:
-                                printf("Unknown param %d\n", param);
+                                printf("Unknown param %d\n", mcs);
                                 break;
                         }
-                    } else if (strcmp(model, "MIMO") == 0) {
-                        switch (param) {
+                    }
+                    else if (model == MU)
+                    {
+                        switch (mcs)
+                        {
                             case 0:
                                 Nbpsc = 1;
                                 Ncbps = 234;
@@ -461,141 +504,136 @@ namespace halow
                                 Kmod = 1 / sqrt(2);
                                 break;
                             default:
-                                printf("Unknown param %d\n", param);
+                                printf("Unknown param %d\n", mcs);
                                 break;
                         }
-                    } else {
-                        printf("Unknown model %s\n", model);
+                    }
+                    else
+                    {
+                        printf("Unknown model %d\n", model);
                     }
 
                     break;
 
                 // channel width 16 MHz
-                       case 16:
-                           Nsd = 468;
-                           Nsa = 512;
-                           Nsp = 16;                        //16 pilot subcarriers per OFDM symbol
-                           pilots[0] = -231;
-                           pilots[1] = -203;
-                           pilots[2] = -167;
-                           pilots[3] = -139;
-                           pilots[4] = -117;
-                           pilots[5] = -89;
-                           pilots[6] = -53;
-                           pilots[7] = -25;
-                           pilots[8] = 25;
-                           pilots[9] = 53;
-                           pilots[10] = 89;
-                           pilots[11] = 117;
-                           pilots[12] = 139;
-                           pilots[13] = 167;
-                           pilots[14] = 203;
-                           pilots[15] = 231;
+                case CBW16:
+                    Nsd = 468;
+                    Nsa = 512;
+                    Nsp = 16;                        //16 pilot subcarriers per OFDM symbol
 
-                           if (strcmp(model, "SISO") == 0) {
-                               switch (param) {
-                                   case 0:
-                                       Nbpsc = 1;
-                                       Ncbps = 468;
-                                       Ndbps = 243;
-                                       Kmod = 1;
-                                       break;
-                                   case 1:
-                                       Nbpsc = 2;
-                                       Ncbps = 936;
-                                       Ndbps = 468;
-                                       Kmod = 1 / sqrt(2);
-                                       break;
-                                   case 2:
-                                       Nbpsc = 2;
-                                       Ncbps = 936;
-                                       Ndbps = 702;
-                                       Kmod = 1 / sqrt(2);
-                                       break;
-                                   case 3:
-                                       Nbpsc = 4;
-                                       Ncbps = 1872;
-                                       Ndbps = 936;
-                                       Kmod = 1 / sqrt(10);
-                                       break;
-                                   case 4:
-                                       Nbpsc = 4;
-                                       Ncbps = 1872;
-                                       Ndbps = 1404;
-                                       Kmod = 1 / sqrt(10);
-                                       break;
-                                   case 5:
-                                       Nbpsc = 6;
-                                       Ncbps = 2804;
-                                       Ndbps = 1872;
-                                       Kmod = 1 / sqrt(42);
-                                       break;
-                                   case 6:
-                                       Nbpsc = 6;
-                                       Ncbps = 2808;
-                                       Ndbps = 2106;
-                                       Kmod = 1 / sqrt(42);
-                                       break;
-                                   case 7:
-                                       Nbpsc = 6;
-                                       Ncbps = 2808;
-                                       Ndbps = 2340;
-                                       Kmod = 1 / sqrt(42);
-                                       break;
-                                   case 8:
-                                       Nbpsc = 8;
-                                       Ncbps = 3744;
-                                       Ndbps = 2808;
-                                       Kmod = 1 / sqrt(170);
-                                       break;
-                                   case 9:
-                                       Nbpsc = 8;
-                                       Ncbps = 3744;
-                                       Ndbps = 3120;
-                                       Kmod = 1 / sqrt(170);
-                                       break;
-                                   default:
-                                       printf("Unknown param %d\n", param);
-                                       break;
-                               }
-                           } else if (strcmp(model, "MIMO") == 0) {
-                               switch (param) {
-                                   case 0:
-                                       Nbpsc = 1;
-                                       Ncbps = 468;
-                                       Ndbps = 234;
-                                       Kmod = 1;
-                                       break;
-                                   case 1:
-                                       Nbpsc = 2;
-                                       Ncbps = 936;
-                                       Ndbps = 468;
-                                       Kmod = 1 / sqrt(2);
-                                       break;
-                                   case 2:
-                                       Nbpsc = 2;
-                                       Ncbps = 936;
-                                       Ndbps = 702;
-                                       Kmod = 1 / sqrt(2);
-                                       break;
-                                   default:
-                                       printf("Unknown param %d\n", param);
-                                       break;
-                               }
-                           } else {
-                               printf("Unknown model %s\n", model);
-                           }
+                    if (model == SU)
+                    {
+                        switch (mcs)
+                        {
+                            case 0:
+                                Nbpsc = 1;
+                                Ncbps = 468;
+                                Ndbps = 243;
+                                Kmod = 1;
+                                break;
+                            case 1:
+                                Nbpsc = 2;
+                                Ncbps = 936;
+                                Ndbps = 468;
+                                Kmod = 1 / sqrt(2);
+                                break;
+                            case 2:
+                                Nbpsc = 2;
+                                Ncbps = 936;
+                                Ndbps = 702;
+                                Kmod = 1 / sqrt(2);
+                                break;
+                            case 3:
+                                Nbpsc = 4;
+                                Ncbps = 1872;
+                                Ndbps = 936;
+                                Kmod = 1 / sqrt(10);
+                                break;
+                            case 4:
+                                Nbpsc = 4;
+                                Ncbps = 1872;
+                                Ndbps = 1404;
+                                Kmod = 1 / sqrt(10);
+                                break;
+                            case 5:
+                                Nbpsc = 6;
+                                Ncbps = 2804;
+                                Ndbps = 1872;
+                                Kmod = 1 / sqrt(42);
+                                break;
+                            case 6:
+                                Nbpsc = 6;
+                                Ncbps = 2808;
+                                Ndbps = 2106;
+                                Kmod = 1 / sqrt(42);
+                                break;
+                            case 7:
+                                Nbpsc = 6;
+                                Ncbps = 2808;
+                                Ndbps = 2340;
+                                Kmod = 1 / sqrt(42);
+                                break;
+                            case 8:
+                                Nbpsc = 8;
+                                Ncbps = 3744;
+                                Ndbps = 2808;
+                                Kmod = 1 / sqrt(170);
+                                break;
+                            case 9:
+                                Nbpsc = 8;
+                                Ncbps = 3744;
+                                Ndbps = 3120;
+                                Kmod = 1 / sqrt(170);
+                                break;
+                            default:
+                                printf("Unknown param %d\n", mcs);
+                                break;
+                        }
+                    }
+                    else if (model  == MU)
+                    {
+                        switch (mcs)
+                        {
+                            case 0:
+                                Nbpsc = 1;
+                                Ncbps = 468;
+                                Ndbps = 234;
+                                Kmod = 1;
+                                break;
+                            case 1:
+                                Nbpsc = 2;
+                                Ncbps = 936;
+                                Ndbps = 468;
+                                Kmod = 1 / sqrt(2);
+                                break;
+                            case 2:
+                                Nbpsc = 2;
+                                Ncbps = 936;
+                                Ndbps = 702;
+                                Kmod = 1 / sqrt(2);
+                                break;
+                            default:
+                                printf("Unknown param %d\n", mcs);
+                                break;
+                        }
+                    }
+                    else
+                    {
+                        printf("Unknown model %d\n", model);
+                    }
 
-                           break;
-
-                default:
-                    printf("Unknown channel width %d\n", channelWidth);
                     break;
+
+                    default:
+                        printf("Unknown channel width %d\n", channelWidth);
+                        break;
             }
 
-            return params;
+
         }
 
     };
-};
-    #endif /* MCS_H_ */
+}
+
+
+#endif /* TXVECTOR_H_ */

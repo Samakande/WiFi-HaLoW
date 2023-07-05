@@ -1,5 +1,7 @@
 /*
  * qam.cc
+ * This is a helper class of the const_mapper class. It encodes the data bits into IQ samples
+ * using grayscale coding
  *
  *  Created on: Jun 24, 2023
  *      Author: Kudzai Samakande
@@ -16,7 +18,7 @@ namespace halow
     }
 
     //encode definition
-    void QAM::encode(const char *bits, double *cPoint)
+    void QAM::encode(const char *bits, double &cPoint)
     {
         int pt = 0;
         int flip = 1;
@@ -28,7 +30,7 @@ namespace halow
             flip *= -bit;
             ++bits;
         }
-        *cPoint = pt;
+        cPoint = pt;
     }
 
 }
