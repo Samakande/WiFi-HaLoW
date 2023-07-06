@@ -73,6 +73,19 @@ namespace halow
 		SHORT_GI
 	};
 
+
+	enum CH_BANDWIDTH
+	{
+		/* Indicates the channel width of the transmitted PPDU
+		*/
+		
+		CBW1, // 1MHZ
+		CBW2, // 2 MHZ
+		CBW4,  // 4 MHZ
+		CBW8,  // 8 MHZ
+		CBW16  // 16 MHZ
+	}
+
        /* The following structure  is the TXVECTOR 
         * for the IEEE802.11ah
         */
@@ -97,9 +110,28 @@ namespace halow
 		int STBC; // Indicates whether or not STBC is used
 	        GI_TYPE;
 		int TXPWR_LEVEL;
-			
-
-		
+		int  RSSI;
+		int MCS;
+		int REC_MCS;
+		CH_BANDWIDTH;					
+		int LENGTH;
+		int APEP_LENGTH;
+		int PSDU_LENGTH;
+		int USER_POSITION;
+		int NUM_STS;
+		int GROUP_ID;
+		int PARTIAL_AID;
+		int NUM_USERS;
+		int BEAM_CHANGE;
+		int RESPONSE_INDICATION;
+		int TRAVELLING PILOTS;
+		bool TIME_OF_DEPARTURE_REQUESTED;
+		int RX_START_OF_FRAME_OFFSET;
+		int UPLINK_INDICATION;
+		int COLOR;
+		unsigned char SCRAMBLER_OR_CRC;
+						
                 } TXVECTOR;
 }
 
+#endif /* TXVECTOR_H_ */
