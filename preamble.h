@@ -43,14 +43,14 @@ class preamble
 		 *\ Return a complex vector of the sequence after phase rotating
 		 */
 
-		 std::vector<std::complex<double>> phase_rotate(std::vector<std::complex<double>> sequence);
+		 std::vector<std::complex<double>> phase_rotate();
 
 		/*!
 		 *\ Method used for PHTLTF matrix mapping
 		 * \ Return a complex vector after multiplying by the  PHTLTF matrix
 		 */
 
-		std::vector<std::complex<double> > phtltf_map(std::vector<std::complex<double>> sequence);
+		std::vector<std::complex<double> > phtltf_map();
 
 		/*!
 		 *\ Method used for CSD mapping
@@ -67,8 +67,10 @@ class preamble
 		std::vector<std::complex<double> > spatial_map(std::vector<std::complex<double>> sequence);
 
 		private:
-			const std::vector<std::complex<double>> generated_sequence;
+			const std::vector<std::complex<double>> stf_sequence;
+			const std::vector<std::complex<double>> ltf_sequence;
 			const std::vector<std::complex<double>> phaserotated_sequence;
+			const std::vector<std::complex<double>> phtltf_sequence;
 };
 
 } /* namespace halow */

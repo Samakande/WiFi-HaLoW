@@ -22,6 +22,7 @@ namespace halow{
 		{
 			//Determine the CH_BANDWIDTH from the TXVECTOR
 			string ch_bandwidth = TXVECTOR.CH_BANDWIDTH;
+			string format = TXVECTOR.FORMAT; 
 			switch (ch_bandwidth){
 
 			// Generating the STF field in the frequency domain over the bandwidth indicated
@@ -96,7 +97,7 @@ namespace halow{
 	
    					   };
 
-				preamble::generated_sequence = sequence;
+				preamble::stf_sequence = sequence;
 	
 				break;
 				case "CBW4":
@@ -106,6 +107,46 @@ namespace halow{
 				case "CBW16":
 				break;
 			}
+			// generating LTF for  S1G_SHORT PPDU
+			switch(format){
+				case "S1G":
+					if (ch_bandwidth == "CBW2"){
+						
+					const std::vector<std::complex<double>> sequence1 =
+   					   {
+						{0,0},{0,0},{0,0},{0,0}
+						{1,0},{1,0},
+       						{1,0}, {1,0}, {–1,0}, {–1,0},
+						{ 1,0}, {1,0}, {–1,0}, {1,0},
+						{ –1,0}, {1,0}, {1,0}, {1,0},
+						{ 1,0}, {1,0}, {1,0}, {–1,0},
+						{ –1,0}, {1,0}, {1,0}, {–1,0},
+						{1,0}, {–1,0}, {1,0}, {1,0}, {1,0}, {1,0},
+						{0,0}
+						{1,0}, {–1,0}, {–1,0}, {1,0}, {1,0}, {–1,0},
+						{ 1,0}, {–1,0}, {1,0}, {–1,0}, {–1,0}, {–1,0},
+						 {–1,0}, {–1,0}, {1,0}, {1,0}, {-1,0}, {–1,0},
+						 {1,0}, {–1,0}, {1,0}, {–1,0}, {1,0}, {1,0},
+						{1,0}, {1,0},
+						{-1,0}, {-1,0},
+						{0,0}, {0,0},{0,0}
+	
+   					   };
+
+					preamble::ltf_sequence = sequence1;
+					}
+					else if (ch_bandwidth == "CBW4"){
+					}
+					else if (ch_bandwidth == "CBW8"){
+					}
+					else{
+					}
+				break;
+				case "S1G_DUP_1M":
+				break;
+				case "S1G_DUP_2M":
+				break;
+ 			}
                 }
 		else if (preamble_type ==  S1G_LONG_PREAMBLE)
 		{
@@ -126,11 +167,11 @@ namespace halow{
 				
 				case "CBW1":
 					// For 1MHz channel all the sequences are  rotated by a gamma = 1
-					preamble::phaserotated_sequence = preamble::generated_sequence;
+					preamble::phaserotated_sequence = preamble::stf_sequence;
 				break;
 				case "CBW2":
 					// For 2MHz channe; all the sequences are rotated by gamma = 1 
-					preamble::phaserotated_sequence = preamble::generated_sequence;
+					preamble::phaserotated_sequence = preamble::stf_sequence;
 				break;
 				case "CBW4":
 					//For a 4 MHz PPDU transmissions of S1G or S1G_DUP_2M frames
@@ -138,10 +179,10 @@ namespace halow{
 					// gamma is j for k >= 0
 					for ( int k = 0, k < 128, k++){
 						if (k < 64){
-							 preamble::phaserotated_sequence[k] = preamble::generated_sequence[k];
+							 preamble::phaserotated_sequence[k] = preamble::stf_sequence[k];
 						}
 						else{
-							preamble::phaserotated_sequence[k] = preamble::generated_sequence[k]*std::complex<double> complex (0, 1);
+							preamble::phaserotated_sequence[k] = preamble::stf_sequence[k]*std::complex<double> complex (0, 1);
 						}
 					}
 				break;
@@ -151,10 +192,10 @@ namespace halow{
 					//  gamma = -1 for k > -64
 					for ( int k = 0, k < 256, k++){
                                                 if (k < 64){
-                                                         preamble::phaserotated_sequence[k] = preamble::generated_sequence[k];
+                                                         preamble::phaserotated_sequence[k] = preamble::stf_sequence[k];
                                                 }
                                                 else{
-                                                        preamble::phaserotated_sequence[k] = preamble::generated_sequence[k]*-1;                                                       
+                                                        preamble::phaserotated_sequence[k] = preamble::stf_sequence[k]*-1;                                                       
                                         }
 				}
 				break;
@@ -166,20 +207,34 @@ namespace halow{
 					// gamma = -1, k > 64
 					for ( int k = 0, k < 512, k++){
                                                 if (k < 192){
-                                                         preamble::phaserotated_sequence[k] = preamble::generated_sequence[k];
+                                                         preamble::phaserotated_sequence[k] = preamble::stf_sequence[k];
                                                 }
 						else if (k >= 192 && k < 256){
-							 preamble::phaserotated_sequence[k] = preamble::generated_sequence[k]*-1;
+							 preamble::phaserotated_sequence[k] = preamble::stf_sequence[k]*-1;
 						}
 						else if (k >= 256 && k < 320) {
-							 preamble::phaserotated_sequence[k] = preamble::generated_sequence[k]*1;
+							 preamble::phaserotated_sequence[k] = preamble::stf_sequence[k]*1;
 						}
                                                 else{
-                                                        preamble::phaserotated_sequence[k] = preamble::generated_sequence[k]*-1;        
+                                                        preamble::phaserotated_sequence[k] = preamble::stf_sequence[k]*-1;        
                                                }
 					}
 				break;
                          }
 
     		}
+
+		std::vector<std::complex<double>>  preamble::phtltf_map(){
+			// matrix mapping: Apply the mapping of the first column of the  PHTLTF matrix
+			preamble::phtltf = preamble::phaserotated_sequence;			
+		}
+
+		std::vector<std::complex<double>>  preamble::csd_map(){
+			//Apply CSD for each space-time stream and frequency segment
+			
+		}
+
+		std::vector<std::complex<double>>  preamble::spatial_map(){
+			//Spatial mapping: Apply the Q matrix
+		}
 }
