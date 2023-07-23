@@ -21,7 +21,7 @@ namespace halow
         public:
             const_mapper();
             //member method to map the interleaved data stream to complex constellation points
-            std::vector<std::complex<double>> map(halow::modParams &params, const char* message);
+            std::vector<std::complex<double>> map(halow::MODPARAMS &params, const unsigned char *message);
             std::vector<std::complex<double>> demap();
     };
 
