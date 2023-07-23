@@ -16,27 +16,27 @@
 #include "txvector.h"
 #include <complex>
 #include <fftw3.h>
-#include <vector>
 
 namespace halow
 {
   class fft
   {
-      fftw_complex * forwardfft_in;
-      fftw_complex * forwardfft_out;
+      private:
+          fftw_complex * forwardfft_in;
+          fftw_complex * forwardfft_out;
 
-      fftw_complex * inversefft_in; // Subcarrier scaling values for all subcarriers, e.g., 64 for 2MHz channel
-      fftw_complex * inversefft_out;
+          fftw_complex * inversefft_in;
+          fftw_complex * inversefft_out;
 
-      fftw_plan forwardPlan;
-      fftw_plan inversePlan;
+          fftw_plan forwardPlan;
+          fftw_plan inversePlan;
 
-      // The variables for the fft class contain pointers to input
-      // and output arrays used in Fourier transform
+          // The variables for the fft class contain pointers to input
+          // and output arrays used in Fourier transform
 
       public:
-          void inverseFFT(std::vector<std::complex<double>> &symbols, halow::modParams &TxVector); // Creates the IFFT plan and executes it
-          std::vector<std::complex<double>> insertGI(std::vector<std::complex<double>> &time_samples, halow::modParams &params, int duration);
+            void inverseFFT(std::vector<std::complex<double>> &symbols, halow::MODPARAMS &params); // Creates the IFFT plan and executes it
+            std::vector<std::complex<double>> insertGI(std::vector<std::complex<double>> &time_samples, halow::MODPARAMS &params, int duration);
   };
 };
 

@@ -15,9 +15,7 @@
 namespace halow
 {
 
-
-
-    std::vector<std::complex<double>> insertPilot(std::vector<std::complex<double>> &psdu, modParams& TxVector,  int n);
+    std::vector<std::complex<double>> insertPilot(std::vector<std::complex<double>> &psdu, halow::MODPARAMS &params,  int n);
 
 } /* namespace halow */
 

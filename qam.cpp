@@ -18,14 +18,14 @@ namespace halow
     }
 
     //encode definition
-    void QAM::encode(const char *bits, double &cPoint)
+    void QAM::encode(const unsigned char *bits, double &cPoint)
     {
         int pt = 0;
         int flip = 1;
 
         for (int i = 0; i < numBits/2; ++i)
         {
-            int bit = (*bits-'0') * 2 - 1; // +1 or -1
+            int bit = *bits * 2 - 1; // +1 or -1
             pt = bit * flip + pt * 2;
             flip *= -bit;
             ++bits;

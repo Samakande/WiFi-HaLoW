@@ -1,3 +1,4 @@
+
 /*
  * fft.cpp
  * This is a wrapper class for computing DFT and inverse DFT using
@@ -16,16 +17,15 @@
 
 namespace halow
 {
-    void fft::inverseFFT(std::vector<std::complex<double>> & symbols, halow::modParams &TxVector)
+    void fft::inverseFFT(std::vector<std::complex<double>> & symbols, halow::MODPARAMS &params)
     {
-        int N = TxVector.Nsa;
+        int N = params.getNSA();
         fft::inversefft_in =  (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * N);
         fft::inversefft_out =  (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * N);
         fft::inversePlan = fftw_plan_dft_1d(N, inversefft_in, inversefft_out, FFTW_BACKWARD, FFTW_ESTIMATE); //create plan before initialization INPUT just in case the plan creation tempers with the input array
 
-        for (int s = 0; s < TxVector.length; s++)
+        for (int s = 0; s < params.getNSYM(); s++)
         {
-
             memcpy(inversefft_in, &symbols[s*N], N* sizeof(std::complex<double>));
 
             fftw_execute(inversePlan);
@@ -45,13 +45,13 @@ namespace halow
         fftw_free(inversefft_in); fftw_free(inversefft_out);
     }
 
-    std::vector<std::complex<double>> fft::insertGI(std::vector<std::complex<double>> &time_samples, halow::modParams &params, int duration)
+    std::vector<std::complex<double>> fft::insertGI(std::vector<std::complex<double>> &time_samples, halow::MODPARAMS &params, int duration)
     {
-        int N = params.Nsa;
-        int samples = duration * params.channelWidth;
-        std::vector<std::complex<double>> prefixed(params.length*(samples+N));
+        int N = params.getNSA();;
+        int samples = duration * pow(2, params.getCBW())*2;;
+        std::vector<std::complex<double>> prefixed((params.getNSYM())*(samples+N));
 
-        for(int s = 0; s < params.length; s++)
+        for(int s = 0; s < params.getNSYM(); s++)
         {
            memcpy(&prefixed[s*(samples+N)], &time_samples[N*(s+1)-samples], samples*sizeof(std::complex<double>));
            memcpy(&prefixed[s*(samples+N)+samples], &time_samples[s*N], N*sizeof(std::complex<double>));

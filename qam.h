@@ -23,7 +23,7 @@ namespace halow
             QAM(int numBits, double power, int gain =0 );
 
             //member function definition
-            void encode(const char *data, double &cPoint ); //calculate constellation point from the bit vector
+            void encode(const unsigned char *data, double &cPoint ); //calculate constellation point from the bit vector
             void decode(const char* IQ); //retrieves bits from the received constellation points
     };
 }
