@@ -69,8 +69,10 @@ class preamble
 		private:
 			const std::vector<std::complex<double>> stf_sequence;
 			const std::vector<std::complex<double>> ltf_sequence;
-			const std::vector<std::complex<double>> phaserotated_sequence;
+			const std::vector<std::complex<double>> stf_sequence;
+			const std::vector<std::complex<double>> ltf_sequence;
 			const std::vector<std::complex<double>> phtltf_sequence;
+			const std::vector<std::complex<double>> Altf_sequence;
 };
 
 } /* namespace halow */

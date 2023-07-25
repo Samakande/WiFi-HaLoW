@@ -11,6 +11,7 @@ namespace halow{
 	/*!
      *  -Initializations
      */
+    preamble::preamble():
     {
     }
    
@@ -136,6 +137,7 @@ namespace halow{
 					preamble::ltf_sequence = sequence1;
 					}
 					else if (ch_bandwidth == "CBW4"){
+						
 					}
 					else if (ch_bandwidth == "CBW8"){
 					}
@@ -167,11 +169,13 @@ namespace halow{
 				
 				case "CBW1":
 					// For 1MHz channel all the sequences are  rotated by a gamma = 1
-					preamble::phaserotated_sequence = preamble::stf_sequence;
+					preamble::phaserotated_stf = preamble::stf_sequence;
+					preamble::phaserotated_ltf = preamble::ltf_sequence;
 				break;
 				case "CBW2":
 					// For 2MHz channe; all the sequences are rotated by gamma = 1 
-					preamble::phaserotated_sequence = preamble::stf_sequence;
+					preamble::phaserotated_stf = preamble::stf_sequence;
+					preamble::phaserotated_stf = preamble::ltf_sequence;
 				break;
 				case "CBW4":
 					//For a 4 MHz PPDU transmissions of S1G or S1G_DUP_2M frames
@@ -179,10 +183,12 @@ namespace halow{
 					// gamma is j for k >= 0
 					for ( int k = 0, k < 128, k++){
 						if (k < 64){
-							 preamble::phaserotated_sequence[k] = preamble::stf_sequence[k];
+							 preamble::phaserotated_stf[k] = preamble::stf_sequence[k];
+							 preamble::phaserotated_ltf[k] = preamble::ltf_sequence[k];
 						}
 						else{
-							preamble::phaserotated_sequence[k] = preamble::stf_sequence[k]*std::complex<double> complex (0, 1);
+							preamble::phaserotated_stf[k] = preamble::stf_sequence[k]*std::complex<double> complex (0, 1);
+							preamble::phaserotated_ltf[k] = preamble::ltf_sequence[k]*std::complex<double> complex (0, 1);
 						}
 					}
 				break;
@@ -192,10 +198,12 @@ namespace halow{
 					//  gamma = -1 for k > -64
 					for ( int k = 0, k < 256, k++){
                                                 if (k < 64){
-                                                         preamble::phaserotated_sequence[k] = preamble::stf_sequence[k];
+                                                         preamble::phaserotated_stf[k] = preamble::stf_sequence[k];
+							 preamble::phaserotated_ltf[k] = preamble::ltf_sequence[k];
                                                 }
                                                 else{
-                                                        preamble::phaserotated_sequence[k] = preamble::stf_sequence[k]*-1;                                                       
+                                                        preamble::phaserotated_stf[k] = preamble::stf_sequence[k]*-1;
+                                                        preamble::phaserotated_ltf[k] = preamble::ltf_sequence[k]*-1;                     
                                         }
 				}
 				break;
@@ -207,16 +215,20 @@ namespace halow{
 					// gamma = -1, k > 64
 					for ( int k = 0, k < 512, k++){
                                                 if (k < 192){
-                                                         preamble::phaserotated_sequence[k] = preamble::stf_sequence[k];
+                                                         preamble::phaserotated_stf[k] = preamble::stf_sequence[k];
+							 preamble::phaserotated_ltf[k] = preamble::ltf_sequence[k];
                                                 }
 						else if (k >= 192 && k < 256){
-							 preamble::phaserotated_sequence[k] = preamble::stf_sequence[k]*-1;
+							 preamble::phaserotated_stf[k] = preamble::stf_sequence[k]*-1;
+							 preamble::phaserotated_ltf[k] = preamble::ltf_sequence[k]*-1;
 						}
 						else if (k >= 256 && k < 320) {
-							 preamble::phaserotated_sequence[k] = preamble::stf_sequence[k]*1;
+							 preamble::phaserotated_stf[k] = preamble::stf_sequence[k]*1;
+							 preamble::phaserotated_ltf[k] = preamble::ltf_sequence[k]*1;
 						}
                                                 else{
-                                                        preamble::phaserotated_sequence[k] = preamble::stf_sequence[k]*-1;        
+                                                        preamble::phaserotated_stf[k] = preamble::stf_sequence[k]*-1;
+							preamble::phaserotated_ltf[k] = preamble::ltf_sequence[k]*-1;        
                                                }
 					}
 				break;
@@ -226,7 +238,8 @@ namespace halow{
 
 		std::vector<std::complex<double>>  preamble::phtltf_map(){
 			// matrix mapping: Apply the mapping of the first column of the  PHTLTF matrix
-			preamble::phtltf = preamble::phaserotated_sequence;			
+			preamble::phtltf = preamble::phaserotated_stf;
+			preamble::Altf = preamble::phaserotated_ltf; 			
 		}
 
 		std::vector<std::complex<double>>  preamble::csd_map(){
